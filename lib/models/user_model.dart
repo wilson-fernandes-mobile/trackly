@@ -11,6 +11,7 @@ class UserModel {
   final String email;
   final bool online;
   final DateTime? ultimaVez;
+  final String? fotoPerfil; // imagem base64 da foto de perfil
 
   const UserModel({
     required this.id,
@@ -18,6 +19,7 @@ class UserModel {
     required this.email,
     this.online = false,
     this.ultimaVez,
+    this.fotoPerfil,
   });
 
   // ── Firestore ↔ Model ─────────────────────────────────────────────────────
@@ -31,6 +33,7 @@ class UserModel {
       ultimaVez: map[UserFields.ultimaVez] != null
           ? (map[UserFields.ultimaVez] as dynamic).toDate() as DateTime
           : null,
+      fotoPerfil: map[UserFields.fotoPerfil] as String?,
     );
   }
 
@@ -41,6 +44,7 @@ class UserModel {
       UserFields.email: email,
       UserFields.online: online,
       if (ultimaVez != null) UserFields.ultimaVez: ultimaVez,
+      if (fotoPerfil != null) UserFields.fotoPerfil: fotoPerfil,
     };
   }
 
@@ -52,6 +56,7 @@ class UserModel {
     String? email,
     bool? online,
     DateTime? ultimaVez,
+    String? fotoPerfil,
   }) {
     return UserModel(
       id: id ?? this.id,
@@ -59,6 +64,7 @@ class UserModel {
       email: email ?? this.email,
       online: online ?? this.online,
       ultimaVez: ultimaVez ?? this.ultimaVez,
+      fotoPerfil: fotoPerfil ?? this.fotoPerfil,
     );
   }
 

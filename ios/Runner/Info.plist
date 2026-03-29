@@ -63,6 +63,12 @@
 		<string>location</string>
 	</array>
 
+	<!-- Galeria e câmera para foto de perfil -->
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>O Trackly usa sua galeria para definir sua foto de perfil.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>O Trackly usa sua câmera para tirar sua foto de perfil.</string>
+
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>O Trackly usa sua localização para compartilhá-la com seus amigos em tempo real.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>

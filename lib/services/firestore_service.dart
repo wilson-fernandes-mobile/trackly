@@ -36,6 +36,11 @@ class FirestoreService {
     return UserModel.fromMap(doc.data()!);
   }
 
+  /// Salva a foto de perfil como base64 no documento do usuário.
+  Future<void> updateUserPhoto(String userId, String base64Photo) async {
+    await _users.doc(userId).update({UserFields.fotoPerfil: base64Photo});
+  }
+
   Future<void> setOnlineStatus(String userId, {required bool isOnline}) async {
     await _users.doc(userId).update({
       UserFields.online: isOnline,

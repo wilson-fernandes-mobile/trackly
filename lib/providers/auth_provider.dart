@@ -128,5 +128,12 @@ class AuthProvider extends ChangeNotifier {
     _error = null;
     notifyListeners();
   }
+
+  /// Atualiza a foto de perfil do usuário localmente (após salvar no Firestore).
+  void updateCurrentUserPhoto(String base64Photo) {
+    if (_currentUser == null) return;
+    _currentUser = _currentUser!.copyWith(fotoPerfil: base64Photo);
+    notifyListeners();
+  }
 }
 

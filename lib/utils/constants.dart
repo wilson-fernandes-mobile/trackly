@@ -22,6 +22,7 @@ class UserFields {
   static const String email = 'email';
   static const String online = 'online';
   static const String ultimaVez = 'ultimaVez';
+  static const String fotoPerfil = 'fotoPerfil'; // base64 da foto de perfil
 }
 
 class InviteFields {
@@ -50,7 +51,7 @@ class AppConfig {
   AppConfig._();
 
   /// Intervalo de atualização da localização no Firestore (segundos)
-  static const int locationUpdateIntervalSeconds = 30;
+  static const int locationUpdateIntervalSeconds = 4;
 
   /// Comprimento do código de convite
   static const int inviteCodeLength = 6;

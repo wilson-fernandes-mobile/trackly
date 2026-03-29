@@ -11,7 +11,7 @@ import GoogleMaps
     // ── Google Maps iOS SDK ────────────────────────────────────────────────
     // IMPORTANTE: Substitua pela sua Google Maps API Key para iOS.
     // Obtenha em: https://console.cloud.google.com/google/maps-apis
-    GMSServices.provideAPIKey("AIzaSyB22Q7qp7cLtSbSV36xYWChU-J1UJg3L94")
+    GMSServices.provideAPIKey("AIzaSyACObRioiZOzMv5nJsHEkxB8-QZRFKncxM")
 
     GeneratedPluginRegistrant.register(with: self)
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)

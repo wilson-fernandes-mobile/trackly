@@ -1,0 +1,89 @@
+// ============================================================
+//  firestore.rules
+//  Regras de segurança do Cloud Firestore para o Trackly.
+//
+//  Para publicar: firebase deploy --only firestore:rules
+//  Ou acesse o console Firebase → Firestore → Regras.
+// ============================================================
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Funções auxiliares ────────────────────────────────────────────────
+
+    /// Verifica se o usuário está autenticado.
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    /// Verifica se o userId do documento pertence ao usuário logado.
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+
+    /// Verifica se os dois usuários são amigos (há vínculo bidirecional).
+    function areFriends(viewerId, targetId) {
+      return viewerId in get(/databases/$(database)/documents/conexoes/$(targetId)).data.amigos;
+    }
+
+    // ── Coleção: users ────────────────────────────────────────────────────
+    match /users/{userId} {
+      // Qualquer usuário autenticado pode ler perfis (necessário para buscar amigos)
+      allow read: if isAuthenticated();
+
+      // Apenas o próprio usuário pode criar ou editar seu perfil
+      allow create: if isAuthenticated() && isOwner(userId);
+      allow update: if isAuthenticated() && isOwner(userId);
+
+      // Exclusão de conta não é permitida pela interface (usar Firebase Console)
+      allow delete: if false;
+    }
+
+    // ── Coleção: convites ─────────────────────────────────────────────────
+    match /convites/{codigoId} {
+      // Qualquer usuário autenticado pode LER um convite (para validar o código)
+      allow read: if isAuthenticated();
+
+      // Apenas usuários autenticados podem criar convites para si mesmos
+      allow create: if isAuthenticated()
+        && request.resource.data.criadoPor == request.auth.uid;
+
+      // Apenas o dono pode atualizar (não necessário no fluxo atual)
+      allow update: if isAuthenticated()
+        && resource.data.criadoPor == request.auth.uid;
+
+      // O convite pode ser deletado pelo dono OU por quem está aceitando
+      // (o batch no acceptInvite deleta o convite)
+      allow delete: if isAuthenticated();
+    }
+
+    // ── Coleção: conexoes ─────────────────────────────────────────────────
+    match /conexoes/{userId} {
+      // O usuário pode ler suas próprias conexões
+      // Amigos também podem ler (necessário para verificar o vínculo)
+      allow read: if isAuthenticated();
+
+      // Apenas o próprio usuário pode criar seu documento de conexões
+      allow create: if isAuthenticated() && isOwner(userId);
+
+      // Usuários autenticados podem atualizar conexões (para criar vínculos)
+      // A lógica de segurança real está no código do servidor (services)
+      allow update: if isAuthenticated();
+
+      allow delete: if isAuthenticated() && isOwner(userId);
+    }
+
+    // ── Coleção: localizacoes ─────────────────────────────────────────────
+    match /localizacoes/{userId} {
+      // Um usuário pode ver sua própria localização OU a de um amigo
+      allow read: if isAuthenticated()
+        && (isOwner(userId) || areFriends(request.auth.uid, userId));
+
+      // Apenas o próprio usuário pode criar/atualizar/deletar sua localização
+      allow write: if isAuthenticated() && isOwner(userId);
+    }
+
+  }
+}
+
